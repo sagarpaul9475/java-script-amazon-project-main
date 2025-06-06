@@ -74,11 +74,9 @@ function Adding(button) {
 
 function updateCartQuantity(){
     let cartQuantity=0;
-
     cart.forEach((CartItem)=>{
         cartQuantity += CartItem.quantity;
     });
-
     document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
 }
 
