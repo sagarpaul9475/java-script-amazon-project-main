@@ -96,14 +96,16 @@ cart.forEach((cartItem)=>{
   </div>
     `;
 });
-
+let x=cart.length;
+document.querySelector('.js-return-to-home-link').innerHTML=x;
 document.querySelector('.js-order-summary').innerHTML=CartSummaryHTML;
-
 document.querySelectorAll('.js-delete-link').forEach((link)=>{
      link.addEventListener('click' ,()=>{
          const productId=link.dataset.productId;
          removeFromCart(productId);
          const container=document.querySelector(`.js-cart-item-container-${productId}`);
          container.remove();
+         x--;
+         document.querySelector('.js-return-to-home-link').innerHTML=x;
      });
 });

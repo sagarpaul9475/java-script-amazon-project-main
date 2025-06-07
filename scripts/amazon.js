@@ -77,8 +77,15 @@ function updateCartQuantity(){
     cart.forEach((CartItem)=>{
         cartQuantity += CartItem.quantity;
     });
-    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+    document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
+    return cartQuantity;
+    
 }
+
+localStorage.setItem('cartQuantity',JSON.stringify(updateCartQuantity()));
+
+let cartQuantity=JSON.parse(localStorage.getItem('cartQuantity'))
+document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
 
 
 document.querySelector('.js-products-grid').innerHTML = ProductHtml;
