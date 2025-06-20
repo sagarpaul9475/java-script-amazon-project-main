@@ -45,8 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   });
 
-  document.querySelector('.js-products-grid').innerHTML = ProductHtml;
-
+  const productsGrid = document.querySelector('.js-products-grid');
+  if (productsGrid) {
+    productsGrid.innerHTML = ProductHtml;
+  }
   document.querySelectorAll('.js-add-to-cart').forEach((button) => {
     button.addEventListener('click', () => {
       const productId = button.dataset.productId;
