@@ -1,117 +1,104 @@
-import {cart,AddToCart} from '../data/cart.js';
+import { cart, AddToCart } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from "./utils/money.js";
 
-let ProductHtml='';
-
-products.forEach((product)=>{
-    ProductHtml += `
-        <div class="product-container">
-            <div class="product-image-container">
-                <img class="product-image"
-                src="${product.image}">
-            </div>
-
-            <div class="product-name limit-text-to-2-lines">
-                ${product.name}
-            </div>
-
-            <div class="product-rating-container">
-                <img class="product-rating-stars"
-                src="images/ratings/rating-${product.rating.stars * 10}.png">
-                <div class="product-rating-count link-primary">
-                     ${product.rating.count}
-                </div>
-            </div>
-
-            <div class="product-price">
-                ${formatCurrency(product.priceCents)}
-            </div>
-
-            <div class="product-quantity-container">
-                <select class="js-select-quantity">
-                <option selected value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                </select>
-            </div>
-
-            <div class="product-spacer"></div>
-
-            <div class="added-to-cart">
-                <img src="images/icons/checkmark.png" class="Add-image">
-                Added
-            </div>
-
-            <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id="${product.id}">
-                Add to Cart
-            </button>
-            </div>
-    `
-});
-
-
 document.addEventListener('DOMContentLoaded', () => {
-    const addToCartButton = document.querySelector('.js-add-to-cart');
-    const dropdown = document.querySelector('.js-select-quantity');
-    
-    let selectedQuantity = 1;
+  let ProductHtml = '';
 
-    dropdown.addEventListener('change', () => {
+  products.forEach((product) => {
+    ProductHtml += `
+      <div class="product-container">
+        <div class="product-image-container">
+          <img class="product-image" src="${product.image}">
+        </div>
+
+        <div class="product-name limit-text-to-2-lines">
+          ${product.name}
+        </div>
+
+        <div class="product-rating-container">
+          <img class="product-rating-stars" src="images/ratings/rating-${product.rating.stars * 10}.png">
+          <div class="product-rating-count link-primary">${product.rating.count}</div>
+        </div>
+
+        <div class="product-price">
+          ${formatCurrency(product.priceCents)}
+        </div>
+
+        <div class="product-quantity-container">
+          <select class="js-select-quantity">
+            ${[...Array(10)].map((_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="product-spacer"></div>
+
+        <div class="added-to-cart">
+          <img src="images/icons/checkmark.png" class="Add-image">
+          Added
+        </div>
+
+        <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id="${product.id}">
+          Add to Cart
+        </button>
+      </div>
+    `;
+  });
+
+  document.querySelector('.js-products-grid').innerHTML = ProductHtml;
+
+  document.querySelectorAll('.js-add-to-cart').forEach((button) => {
+    button.addEventListener('click', () => {
+      const productId = button.dataset.productId;
+
+      const productContainer = button.closest('.product-container');
+      const dropdown = productContainer.querySelector('.js-select-quantity');
+
+      let selectedQuantity = 1;
+      if (dropdown) {
         selectedQuantity = parseInt(dropdown.value);
-    });
+      }
 
-    addToCartButton.addEventListener('click', () => {
-        const productId = addToCartButton.dataset.productId; 
-        AddToCart(productId, selectedQuantity);  
-        updateCartQuantity();
+      AddToCart(productId, selectedQuantity);
+      Adding(button);
+      updateCartQuantity();
     });
+  });
+
+  const savedQuantity = JSON.parse(localStorage.getItem('cartQuantity'));
+  if (savedQuantity) {
+    const cartElement = document.querySelector('.js-cart-quantity');
+    if (cartElement) {
+      cartElement.innerHTML = savedQuantity;
+    }
+  }
 });
-
 
 function Adding(button) {
-    const productContainer = button.closest('.product-container');
-    const checkmarkImg = productContainer.querySelector('.Add-image');
-    const addedToCartDiv = productContainer.querySelector('.added-to-cart');
+  const productContainer = button.closest('.product-container');
+  const checkmarkImg = productContainer.querySelector('.Add-image');
+  const addedToCartDiv = productContainer.querySelector('.added-to-cart');
 
-    checkmarkImg.src = "images/icons/checkmark.png";
-    addedToCartDiv.style.opacity = '1';
+  checkmarkImg.src = "images/icons/checkmark.png";
+  addedToCartDiv.style.opacity = '1';
 
-    setTimeout(() => {
-        addedToCartDiv.style.opacity = '0';
-    }, 2000);
+  setTimeout(() => {
+    addedToCartDiv.style.opacity = '0';
+  }, 2000);
 }
 
+export function updateCartQuantity() {
+  let cartQuantity = 0;
+  cart.forEach((CartItem) => {
+    cartQuantity += CartItem.quantity;
+  });
 
-function updateCartQuantity(selectedCartQuantity){
-    let cartQuantity=0;
-    cart.forEach((CartItem)=>{
-        cartQuantity += CartItem.quantity;
-    });
-    document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
-    return cartQuantity;
+  const cartQuantityElement = document.querySelector('.js-cart-quantity');
+  if (cartQuantityElement) {
+    cartQuantityElement.innerHTML = cartQuantity;
+  }
+
+  localStorage.setItem('cartQuantity', JSON.stringify(cartQuantity));
+
+  return cartQuantity;
 }
-
-localStorage.setItem('cartQuantity',JSON.stringify(updateCartQuantity()));
-
-let cartQuantity=JSON.parse(localStorage.getItem('cartQuantity'))
-document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
-
-
-document.querySelector('.js-products-grid').innerHTML = ProductHtml;
-document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
-    button.addEventListener('click' , ()=>{
-        let productId=button.dataset.productId;
-        Adding(button);
-        AddToCart(productId);
-        updateCartQuantity();       
-    });
-    
-});
