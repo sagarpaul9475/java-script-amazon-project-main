@@ -29,7 +29,7 @@ products.forEach((product)=>{
             </div>
 
             <div class="product-quantity-container">
-                <select>
+                <select class="js-select-quantity">
                 <option selected value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -58,6 +58,24 @@ products.forEach((product)=>{
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const addToCartButton = document.querySelector('.js-add-to-cart');
+    const dropdown = document.querySelector('.js-select-quantity');
+    
+    let selectedQuantity = 1;
+
+    dropdown.addEventListener('change', () => {
+        selectedQuantity = parseInt(dropdown.value);
+    });
+
+    addToCartButton.addEventListener('click', () => {
+        const productId = addToCartButton.dataset.productId; 
+        AddToCart(productId, selectedQuantity);  
+        updateCartQuantity();
+    });
+});
+
+
 function Adding(button) {
     const productContainer = button.closest('.product-container');
     const checkmarkImg = productContainer.querySelector('.Add-image');
@@ -72,14 +90,13 @@ function Adding(button) {
 }
 
 
-function updateCartQuantity(){
+function updateCartQuantity(selectedCartQuantity){
     let cartQuantity=0;
     cart.forEach((CartItem)=>{
         cartQuantity += CartItem.quantity;
     });
     document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
     return cartQuantity;
-    
 }
 
 localStorage.setItem('cartQuantity',JSON.stringify(updateCartQuantity()));
