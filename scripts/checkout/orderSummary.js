@@ -5,7 +5,7 @@ import { updateCartQuantity } from "../amazon.js";
 // import {hello} from "https://unpkg.com/supersimpledev@1.0.1/hello.esm.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";//Default Export {dayjs} no curley braces.
 import { deliveryOptions ,getDeliveryOptions } from "../../data/deliveryOptions.js";
-
+import { renderPaymentSummary } from "./paymentSummary.js";
 // hello();
 
 // const today=dayjs();
@@ -126,6 +126,8 @@ export function renderOrderSummary(){
           x--;
           document.querySelector('.js-return-to-home-link').innerHTML = x;
           updateCartQuantity();
+
+          renderPaymentSummary();
         });
       });
 
@@ -171,6 +173,7 @@ export function renderOrderSummary(){
             updatedSpan.innerText = newQuantity;
 
             select.replaceWith(updatedSpan);
+            renderPaymentSummary();
           });
         });
       });
@@ -179,6 +182,7 @@ export function renderOrderSummary(){
           const {productId,deliveryOptionId}=element.dataset;
           updateDeliveryOption(productId,deliveryOptionId);
           renderOrderSummary();
+          renderPaymentSummary();
         });
       });
   }
