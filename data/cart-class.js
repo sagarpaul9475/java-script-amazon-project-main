@@ -1,13 +1,13 @@
 class Cart{
-    cartItems=undefined;
-    localStorageKey = undefined;
+    cartItems;
+    #localStorageKey;//private property
 
     constructor(localStorageKey) {
-        this.localStorageKey = localStorageKey;
-        this.loadFromStorage();
+        this.#localStorageKey = localStorageKey;
+        this.#loadFromStorage();
     }
-    loadFromStorage(){
-        this.cartItems= JSON.parse(localStorage.getItem(localStorage.getItem(this.localStorageKey)));
+    #loadFromStorage(){
+        this.cartItems= JSON.parse(localStorage.getItem(localStorage.getItem(this.#localStorageKey)));
         if(!this.cartItems){
             this.cartItems=[{
                 productId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -21,7 +21,7 @@ class Cart{
         }
     };
     saveToStorage(){
-        localStorage.setItem(this.localStorageKey,JSON.stringify(this.cartItems));
+        localStorage.setItem(this.#localStorageKey,JSON.stringify(this.cartItems));
     };
     AddToCart(productId, selectedQuantity = 0) {
         let matchingItem;
@@ -71,6 +71,8 @@ class Cart{
 
 const cart = new Cart('cart-oop');
 const businessCart = new Cart('cart-business');
+
+// cart.#localStorageKey='test';
 
 
 // cart.AddToCart('83d4ca15-0f35-48f5-b7a3-1ea210004f2e');
