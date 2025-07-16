@@ -5,6 +5,23 @@ import { loadCart } from "../data/cart.js";
 //import "../data/cart-class.js";//Runs the data directly.
 // import '../data/backend_practice.js';
 
+async function loadPage(){
+
+    await loadProductsFetch();
+
+    await new Promise((resolve) => {
+    loadCart(() => {
+        resolve();
+    });
+  });
+
+  renderOrderSummary();
+  renderPaymentSummary();
+
+}
+loadPage();
+
+/*
 Promise.all([
 loadProductsFetch(),
 new Promise((resolve) => {
@@ -17,6 +34,8 @@ new Promise((resolve) => {
     renderOrderSummary();
     renderPaymentSummary();
 });
+*/
+
 /*
 new Promise((resolve) => {
     loadProducts(()=>{
