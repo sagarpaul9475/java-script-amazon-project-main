@@ -108,9 +108,12 @@ export function loadProductsFetch(){
     });
     console.log('load products');
 
+  }).catch(()=>{
+    console.error('Unexpected error while loading products');
   });
   return promise;
 }
+loadProductsFetch();
 /*
 loadProductsFetch().then(()=>{
   console.log('next step');
@@ -129,6 +132,10 @@ export function loadProducts(fun) {
   console.log('load products');
   fun();
 });
+  xhr.addEventListener('error',()=>{
+    console.error('Unexpected error while loading products');
+  });
+
   xhr.open("GET", "https://supersimplebackend.dev/products");
   xhr.send();
 }
